@@ -1,0 +1,115 @@
+<div class="container-fluid">
+  <!--HEADER-->
+  <mat-grid-list cols="1" rowHeight="4em" style="background-color: #101113;">
+    <mat-grid-tile>
+      <div style="width: 100%; padding-left: 20px;">
+        <span class="control-label"> Zeus Code Generator</span>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <!--MED-->
+  <div class="row h-100" style="margin: 30px;">
+    <div class="col-md-2 p-4" style="text-align: center;">
+      <mat-card style="background: #42424270;
+        color: #ffffffde;">
+        <h3><span class="control-label">ENTITIES</span></h3>
+        <button mat-button style="background-color: white; color: black;" (click)="resetEntityForm()">New</button>
+        <mat-selection-list class="list" #entitiess [multiple]="false"
+          (selectionChange)="onSelectedEntityChange($event, entitiess.selectedOptions)">
+          <mat-list-option *ngFor="let entity of entities_" [value]="entity">
+            {{entity.entityName}}
+          </mat-list-option>
+        </mat-selection-list>
+      </mat-card>
+
+
+
+    </div>
+
+
+    <div class="col-md-6  col-sm- p-4 ">
+      <mat-card style="background: #42424270;
+        color: #ffffffde;">
+        <h3 style="text-align: center;"><span class="control-label">ENTITY INFO</span></h3>
+        <mat-form-field appearance="fill" class="fullWidth">
+          <mat-label>Entity Name</mat-label>
+          <input matInput [(ngModel)]="currentEntity.entityName">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="fullWidth">
+          <mat-label>Id Field Name</mat-label>
+          <input matInput [(ngModel)]="currentEntity.idParamName">
+          <mat-hint style="color: white;">User -> userId</mat-hint>
+        </mat-form-field>
+        <div style=" display: flex; justify-content: space-between; flex-wrap: wrap;">
+          <mat-form-field appearance="fill">
+            <mat-label>Property</mat-label>
+            <input matInput [(ngModel)]="currentTypeName">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select [(ngModel)]="currentType" (selectionChange)="notifyChangeSelect(currentType)">
+              <mat-option value="String">String</mat-option>
+              <mat-option value="int">int</mat-option>
+              <mat-option value="double">double</mat-option>
+              <mat-option value="float">float</mat-option>
+              <mat-option value="boolean">boolean</mat-option>
+              <mat-option value="">other (specify)</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" *ngIf="canShowOtherField">
+            <mat-label>Specify Other Type</mat-label>
+            <input matInput [(ngModel)]="currentType">
+            <mat-hint style="color: white;">{{hint}}</mat-hint>
+          </mat-form-field>
+          <button mat-button [disabled]="currentType == null || currentTypeName == null" (click)="addProperty()">
+            <mat-icon>add_box</mat-icon>
+          </button>
+        </div>
+
+        <mat-list *ngIf="currentEntity.properties && currentEntity.properties.size > 0">
+          <h3><span class="control-label">Properties</span></h3>
+          <mat-list-item *ngFor="let property of currentEntity.properties | keyvalue" style="color: white;">
+            
+            <div class="properties">
+              {{property.key}} ------ {{property.value}} 
+              <button mat-button (click)="deleteProp(property.key)">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          </mat-list-item>
+        </mat-list>
+        <button [disabled]="currentEntity.entityName == '' || currentEntity.idParamName == ''" *ngIf="!canDisableForm" mat-button  (click)="addEntity()">
+          <mat-icon>add_box</mat-icon>
+          Add Entity
+        </button>
+        <button *ngIf="canDisableForm" mat-button style="background-color: rgb(221, 60, 60); color: black;"
+          (click)="removeEntity()">
+          Delete Entity
+        </button>
+      </mat-card>
+    </div>
+
+
+    <div class="col-md-4  p-4 ">
+      <mat-card style="background: #42424270;
+        color: #ffffffde;">
+        <h3 style="text-align: center;"><span class="control-label">GENERATE CODE</span></h3>
+        <span class="control-label">This will generate all Services and DTOs needed based on the Entities that you have
+          provided.</span>
+        <br><br>
+        <span class="control-label">Import of needed classes will be manually required since they may vary from version
+          to version.</span>
+        <br><br>
+        <span class="control-label">Once the zip is downloaded copy it to your project and you are good to go.</span>
+        <br><br>
+        <button [disabled]="entities_.length == 0" mat-button  (click)="generateCode()">
+          <mat-icon>cloud_download</mat-icon>
+          Generate .zip
+        </button>
+      </mat-card>
+
+    </div>
+  </div>
+</div>
