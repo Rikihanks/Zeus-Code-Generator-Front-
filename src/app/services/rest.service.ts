@@ -12,15 +12,13 @@ export class RestService {
 
   public generateZipString(entities: Entity[]) {
     let internalEntities = _.cloneDeep(entities);
-    console.log(internalEntities);
     
     internalEntities.forEach(e => e.properties = this.selfIterator(e.properties));
-    console.log(internalEntities);
-    console.log(JSON.stringify(internalEntities));
+    
+    console.log(process.env.backend_url);
     
     
-    
-    return this.http.post("http://localhost:8080/generate",internalEntities, { responseType: 'text' });
+    return this.http.post(process.env.backend_url, internalEntities, { responseType: 'text' });
   }
 
       public selfIterator(map) {
