@@ -10,6 +10,7 @@
 
   <!--MED-->
   <div class="row h-100" style="margin: 30px;">
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
     <div class="col-md-2 p-4" style="text-align: center;">
       <mat-card style="background: #42424270;
         color: #ffffffde;">
@@ -33,21 +34,20 @@
         color: #ffffffde;">
         <h3 style="text-align: center;"><span class="control-label">ENTITY INFO</span></h3>
         <mat-form-field appearance="fill" class="fullWidth">
-          <mat-label>Entity Name</mat-label>
+          <mat-label>Entity Name <small>(Ex: User)</small></mat-label>
           <input matInput [(ngModel)]="currentEntity.entityName">
         </mat-form-field>
         <mat-form-field appearance="fill" class="fullWidth">
-          <mat-label>Id Field Name</mat-label>
+          <mat-label>Id Field Name <small>(Ex: userId)</small></mat-label>
           <input matInput [(ngModel)]="currentEntity.idParamName">
-          <mat-hint style="color: white;">User -> userId</mat-hint>
         </mat-form-field>
         <div style=" display: flex; justify-content: space-between; flex-wrap: wrap;">
           <mat-form-field appearance="fill">
-            <mat-label>Property</mat-label>
+            <mat-label>Property <small>(Ex: userId)</small></mat-label>
             <input matInput [(ngModel)]="currentTypeName">
           </mat-form-field>
           <mat-form-field appearance="fill">
-            <mat-label>Type</mat-label>
+            <mat-label>Type <small>(Ex: int)</small></mat-label>
             <mat-select [(ngModel)]="currentType" (selectionChange)="notifyChangeSelect(currentType)">
               <mat-option value="String">String</mat-option>
               <mat-option value="int">int</mat-option>
@@ -69,7 +69,12 @@
         </div>
 
         <mat-list *ngIf="currentEntity.properties && currentEntity.properties.size > 0">
-          <h3><span class="control-label">Properties</span></h3>
+          <h3>
+            <span class="control-label">Properties</span>
+            <br>
+            <small>NOTE: The Id Field Name MUST be also included as a property.</small>
+          </h3>
+          
           <mat-list-item *ngFor="let property of currentEntity.properties | keyvalue" style="color: white;">
             
             <div class="properties">

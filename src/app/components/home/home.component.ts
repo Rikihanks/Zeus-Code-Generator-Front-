@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSelect } from '@angular/material/select';
 import { Entity } from 'src/app/model/entity';
 import { EntityService } from 'src/app/services/entity.service';
 import { RestService } from 'src/app/services/rest.service';
@@ -19,6 +20,7 @@ export class HomeComponent implements OnInit {
   hint = "Ex: List<User>  Must be correctly spelled"
   canShowOtherField = false;
   canDisableForm = false;
+  loading = false;
   
   ngOnInit(): void {
     this.entityService.getAddedEntitiesObservable().subscribe(entities => {
@@ -33,6 +35,8 @@ export class HomeComponent implements OnInit {
   onSelectedEntityChange(event, entity) {
     this.canDisableForm = true;
     this.currentEntity = event.option.value;
+    const matSelect: MatSelect = event.source;
+    matSelect.writeValue(null);
   }
 
   resetEntityForm() {
@@ -74,10 +78,8 @@ export class HomeComponent implements OnInit {
   }
 
   generateCode() {
-    console.log(this.entities_);
-    
+    this.loading = true;   
     this.restService.generateZipString(this.entities_).subscribe(res =>{
-      console.log(res);
       let blob = this.base64toBlob(res, 'application/zip')
       
       var url = window.URL.createObjectURL(blob);
@@ -88,10 +90,11 @@ export class HomeComponent implements OnInit {
       a.download = "generated.zip";
       a.click();
       window.URL.revokeObjectURL(url);
-      
+
+      this.loading = false;   
     }, err => {
       console.log(err);
-      
+      this.loading = false;   
     })
 
     

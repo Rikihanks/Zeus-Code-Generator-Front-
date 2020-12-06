@@ -15,8 +15,6 @@ export class RestService {
     
     internalEntities.forEach(e => e.properties = this.selfIterator(e.properties));
     
-    console.log(environment.backend_url);
-    
     
     return this.http.post(environment.backend_url, internalEntities, { responseType: 'text' });
   }
