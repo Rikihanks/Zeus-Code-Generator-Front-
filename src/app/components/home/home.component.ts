@@ -5,6 +5,8 @@ import { Entity } from 'src/app/model/entity';
 import { EntityService } from 'src/app/services/entity.service';
 import { RestService } from 'src/app/services/rest.service';
 import * as _ from 'lodash';
+import { MatDialog } from '@angular/material/dialog';
+import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +15,7 @@ import * as _ from 'lodash';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private entityService: EntityService, private restService: RestService) { }
+  constructor(private entityService: EntityService, private restService: RestService, public dialog: MatDialog) { }
 
   entities_ : Entity[] = [];
   currentEntity : Entity;
@@ -93,24 +95,29 @@ export class HomeComponent implements OnInit {
 
   generateCode() {
     this.loading = true;   
-    this.restService.generateZipString(this.entities_).subscribe(res =>{
-      let blob = this.base64toBlob(res, 'application/zip')
-      
-      var url = window.URL.createObjectURL(blob);
-      var a = document.createElement("a") as any;
-      document.body.appendChild(a);
-      a.style = "display: none";
-      a.href = url;
-      a.download = "generated.zip";
-      a.click();
-      window.URL.revokeObjectURL(url);
+    const dialogRef = this.dialog.open(SpinnerComponent, {
+      panelClass: 'cLoader'
+    });
 
-      this.loading = false;   
+      this.restService.generateZipString(this.entities_).subscribe(res =>{
+        let blob = this.base64toBlob(res, 'application/zip')
+        
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement("a") as any;
+        document.body.appendChild(a);
+        a.style = "display: none";
+        a.href = url;
+        a.download = "generated.zip";
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        this.loading = false;   
+        dialogRef.close()
     }, err => {
-      console.log(err);
-      this.loading = false;   
+        console.log(err);
+        this.loading = false;   
+        dialogRef.close()
     })
-
     
  
   }
