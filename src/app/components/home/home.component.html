@@ -15,9 +15,12 @@
       <mat-card style="background: #42424270;
         color: #ffffffde;">
         <h3><span class="control-label">ENTITIES</span></h3>
+        <button mat-button style="background-color: white; color: black;" (click)="loadExampleEntity()">Load Example Entity</button>
+        <br>
+        <br>
         <button mat-button style="background-color: white; color: black;" (click)="resetEntityForm()">New</button>
         <mat-selection-list class="list" #entitiess [multiple]="false"
-          (selectionChange)="onSelectedEntityChange($event, entitiess.selectedOptions)">
+          (selectionChange)="onSelectedEntityChange($event)">
           <mat-list-option *ngFor="let entity of entities_" [value]="entity">
             {{entity.entityName}}
           </mat-list-option>
@@ -72,7 +75,7 @@
           <h3>
             <span class="control-label">Properties</span>
             <br>
-            <small>NOTE: The Id Field Name MUST be also included as a property.</small>
+            <small style="color: brown;">NOTE: The Id Field Name MUST be also included as a property.</small>
           </h3>
           
           <mat-list-item *ngFor="let property of currentEntity.properties | keyvalue" style="color: white;">

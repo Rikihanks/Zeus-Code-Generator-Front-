@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSelect } from '@angular/material/select';
+import { stringify } from 'querystring';
 import { Entity } from 'src/app/model/entity';
 import { EntityService } from 'src/app/services/entity.service';
 import { RestService } from 'src/app/services/rest.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-home',
@@ -32,10 +34,10 @@ export class HomeComponent implements OnInit {
     
   }
 
-  onSelectedEntityChange(event, entity) {
+  onSelectedEntityChange(event) {
+    const matSelect: MatSelect = event.source;
     this.canDisableForm = true;
     this.currentEntity = event.option.value;
-    const matSelect: MatSelect = event.source;
     matSelect.writeValue(null);
   }
 
@@ -61,6 +63,18 @@ export class HomeComponent implements OnInit {
     this.entities_.splice(this.entities_.indexOf(this.currentEntity),1)
     this.entityService.setAddedEntities(this.entities_);
     this.resetEntityForm();
+  }
+
+  loadExampleEntity() {
+    let dfEntity = new Entity();
+    dfEntity.entityName = "User";
+    dfEntity.idParamName = "userId";
+    let props = new Map();
+    props.set("userId", "int");
+    props.set("userName", "String");
+    props.set("userRoles", "List<Role>");
+    dfEntity.properties = props;
+    this.entities_.push(_.cloneDeep(dfEntity));
   }
 
   addProperty() {
